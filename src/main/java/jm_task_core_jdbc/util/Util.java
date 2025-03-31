@@ -1,5 +1,8 @@
 package jm_task_core_jdbc.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.sql.*;
 
 public class Util {
@@ -9,14 +12,19 @@ public class Util {
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "root";
 
+    private static final Logger logger = Logger.getLogger(Util.class.getName());
+
     public static Connection getConnection() {
         Connection connection = null;
         try {
             Class.forName(DB_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-        } catch (ClassNotFoundException | SQLException e  ) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            System.out.println("Connection ERROR");
+            logger.info("Driver not found");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.info("Connection error");
         }
         return connection;
     }
