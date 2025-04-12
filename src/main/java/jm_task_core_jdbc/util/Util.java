@@ -1,12 +1,8 @@
 package jm_task_core_jdbc.util;
 
-import jm_task_core_jdbc.model.User;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.cfg.Environment;
 
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,26 +17,10 @@ public class Util {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
+                configuration.configure("hibernate.cfg.xml");
 
-                Properties properties = new Properties();
-                properties.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-                properties.put(Environment.URL, "jdbc:mysql://localhost:3306/mydb");
-                properties.put(Environment.USER, "root");
-                properties.put(Environment.PASS, "root");
-                properties.put(Environment.DIALECT, "MySQL");
-                properties.put(Environment.SHOW_SQL, "true");
-                properties.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-                properties.put(Environment.HBM2DDL_AUTO, "update");
-
-
-                configuration.setProperties(properties);
-                configuration.addAnnotatedClass(User.class);
-
-                StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-                        .applySettings(configuration.getProperties());
-                sessionFactory = configuration.buildSessionFactory(builder.build());
+                sessionFactory = configuration.buildSessionFactory();
                 logger.info("Hibernate SessionFactory created");
-
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Error creating session factory", e);
                 throw new RuntimeException(e);
