@@ -8,9 +8,11 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class UserDaoHibernateImpl implements UserDao {
 
+    private static Logger logger = Logger.getLogger(UserDaoHibernateImpl.class.getName());
     private static SessionFactory sessionFactory;
 
     public UserDaoHibernateImpl() {
@@ -30,8 +32,10 @@ public class UserDaoHibernateImpl implements UserDao {
                     "lastName VARCHAR(255), " +
                     "age TINYINT)").executeUpdate();
             transaction.commit();
+            logger.info("Table created");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Error creating users table");
+            throw new RuntimeException(e);
         }
     }
 
@@ -42,8 +46,10 @@ public class UserDaoHibernateImpl implements UserDao {
             Transaction transaction = session.beginTransaction();
             session.createSQLQuery("DROP TABLE IF EXISTS users").executeUpdate();
             transaction.commit();
+            logger.info("Table dropped");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Error dropping users table");
+            throw new RuntimeException(e);
         }
 
     }
@@ -56,8 +62,10 @@ public class UserDaoHibernateImpl implements UserDao {
             User user = new User(name, lastName, age);
             session.save(user);
             transaction.commit();
+            logger.info("User saved");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Error saving user");
+            throw new RuntimeException(e);
         }
     }
 
@@ -69,8 +77,10 @@ public class UserDaoHibernateImpl implements UserDao {
             User user = session.get(User.class, id);
             session.delete(user);
             transaction.commit();
+            logger.info("User deleted");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Error deleting user");
+            throw new RuntimeException(e);
         }
 
     }
@@ -80,8 +90,8 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("from User", User.class).list();
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            logger.info("Error getting all users");
+            throw new RuntimeException(e);
         }
     }
 
@@ -91,8 +101,10 @@ public class UserDaoHibernateImpl implements UserDao {
             Transaction transaction = session.beginTransaction();
             session.createSQLQuery("TRUNCATE TABLE users").executeUpdate();
             transaction.commit();
+            logger.info("Table cleaned");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Error cleaning users table");
+            throw new RuntimeException(e);
         }
 
     }
